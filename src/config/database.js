@@ -7,7 +7,6 @@ const parsedDatabaseUrl = databaseUrl ? new URL(databaseUrl) : null;
 const localDatabaseHosts = new Set(['neon-local', 'localhost', '127.0.0.1']);
 
 if (
-  process.env.NODE_ENV === 'development' &&
   parsedDatabaseUrl &&
   localDatabaseHosts.has(parsedDatabaseUrl.hostname)
 ) {
