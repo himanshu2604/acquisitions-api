@@ -6,10 +6,7 @@ const databaseUrl = process.env.DATABASE_URL;
 const parsedDatabaseUrl = databaseUrl ? new URL(databaseUrl) : null;
 const localDatabaseHosts = new Set(['neon-local', 'localhost', '127.0.0.1']);
 
-if (
-  parsedDatabaseUrl &&
-  localDatabaseHosts.has(parsedDatabaseUrl.hostname)
-) {
+if (parsedDatabaseUrl && localDatabaseHosts.has(parsedDatabaseUrl.hostname)) {
   const databasePort = parsedDatabaseUrl.port || '5432';
   neonConfig.fetchEndpoint = `http://${parsedDatabaseUrl.hostname}:${databasePort}/sql`;
   neonConfig.useSecureWebSocket = false;
