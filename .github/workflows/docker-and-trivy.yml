@@ -52,7 +52,7 @@ jobs:
 
       # 🔹 Build image locally (NO push yet)
       - name: Build Docker image (local)
-      - uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: false
