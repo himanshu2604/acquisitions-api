@@ -3,8 +3,8 @@ name: Docker Build, Scan & Push
 on:
   workflow_run:
     workflows:
-      - Lint and Format Check
-      - Tests
+      - lint and format
+      - tests
     types:
       - completed
 
