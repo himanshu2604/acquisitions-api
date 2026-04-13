@@ -1,7 +1,8 @@
 # Multi-stage Dockerfile for Node.js acquisitions application
 
-FROM node:18-alpine AS base
+FROM node:20-alpine3.20 AS base
 WORKDIR /app
+RUN apk add --no-cache --upgrade tar
 COPY package*.json ./
 
 FROM base AS development
@@ -15,7 +16,8 @@ FROM base AS production-deps
 ENV NODE_ENV=production
 RUN npm ci --omit=dev && npm cache clean --force
 
-FROM node:18-alpine AS production
+FROM node:20-alpine3.20 AS production
+RUN apk add --no-cache --upgrade tar
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=production-deps /app/node_modules ./node_modules
