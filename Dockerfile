@@ -16,7 +16,7 @@ FROM base AS production-deps
 ENV NODE_ENV=production
 RUN npm ci --omit=dev && npm cache clean --force
 
-FROM node:20-alpine3.20 AS production
+FROM node:20-alpine3.21 AS production
 RUN apk update && apk upgrade tar && apk add --no-cache tar
 WORKDIR /app
 ENV NODE_ENV=production
