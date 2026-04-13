@@ -57,6 +57,7 @@ jobs:
           context: .
           push: false
           load: true
+          no-cache: true
           tags: acquisitions-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

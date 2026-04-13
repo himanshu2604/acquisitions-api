@@ -1,9 +1,8 @@
 # Multi-stage Dockerfile for Node.js acquisitions application
 
 FROM node:20-alpine3.20 AS base
-RUN apk update && apk upgrade
-WORKDIR /app
 RUN apk update && apk upgrade tar && apk add --no-cache tar
+WORKDIR /app
 COPY package*.json ./
 
 FROM base AS development
@@ -18,7 +17,6 @@ ENV NODE_ENV=production
 RUN npm ci --omit=dev && npm cache clean --force
 
 FROM node:20-alpine3.20 AS production
-RUN apk update && apk upgrade
 RUN apk update && apk upgrade tar && apk add --no-cache tar
 WORKDIR /app
 ENV NODE_ENV=production
