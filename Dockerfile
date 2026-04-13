@@ -3,7 +3,7 @@
 FROM node:20-alpine3.20 AS base
 RUN apk update && apk upgrade
 WORKDIR /app
-RUN apk add --no-cache --upgrade tar
+RUN apk update && apk upgrade tar && apk add --no-cache tar
 COPY package*.json ./
 
 FROM base AS development
@@ -19,7 +19,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 
 FROM node:20-alpine3.20 AS production
 RUN apk update && apk upgrade
-RUN apk add --no-cache --upgrade tar
+RUN apk update && apk upgrade tar && apk add --no-cache tar
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=production-deps /app/node_modules ./node_modules
