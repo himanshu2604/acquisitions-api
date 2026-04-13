@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for Node.js acquisitions application
 
-FROM node:20-alpine3.20 AS base
+FROM node:20-alpine3.21 AS base
 RUN apk update && apk upgrade tar && apk add --no-cache tar
 WORKDIR /app
 COPY package*.json ./
