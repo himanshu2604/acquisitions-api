@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/kubernetes-demo-api
 
 jobs:
-  build-scan-push:
+  docker-build:
     name: Build, Scan & Push Docker Image
     runs-on: ubuntu-latest
 
@@ -62,67 +62,101 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Cache Trivy DB (speed optimization)
-      - name: Cache Trivy DB
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/trivy
-          key: ${{ runner.os }}-trivy
+  trivy-scan:
+    # Cache Trivy DB (speed optimization)
+    - name: Cache Trivy DB
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/trivy
+        key: ${{ runner.os }}-trivy
 
-      # Trivy Scan (FAIL if vulnerabilities found)
-      - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@v0.35.0
-        with:
-          image-ref: 'acquisitions-api:${{ github.sha }}'
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
+    # Trivy Scan (FAIL if vulnerabilities found)
+    - name: Run Trivy scan
+      uses: aquasecurity/trivy-action@v0.35.0
+      with:
+        image-ref: 'acquisitions-api:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        severity: 'CRITICAL'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
 
-      # Generate SBOM
-      - name: Generate SBOM
-        if: always() # 🔥 ensures it runs even if scan fails
-        uses: aquasecurity/trivy-action@v0.35.0
-        with:
-          image-ref: 'acquisitions-api:${{ github.sha }}'
-          format: 'cyclonedx'
-          output: 'sbom.json'
-          scan-type: 'image'
+    # Generate SBOM
+    - name: Generate SBOM
+      if: always() # 🔥 ensures it runs even if scan fails
+      uses: aquasecurity/trivy-action@v0.35.0
+      with:
+        image-ref: 'acquisitions-api:${{ github.sha }}'
+        format: 'cyclonedx'
+        output: 'sbom.json'
+        scan-type: 'image'
 
-      # 📦 Upload SBOM
-      - name: Upload SBOM
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-report
-          path: sbom.json
+    # 📦 Upload SBOM
+    - name: Upload SBOM
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-report
+        path: sbom.json
 
-      # 🚀 Push image ONLY if scan passed
-      - name: Push Docker image
-        uses: docker/build-push-action@v5
+  sonarqube:
+    runs-on: ubuntu-latest
+    needs: trivy-scan # Only runs after Trivy passes
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
+          fetch-depth: 0 # Full history needed for blame data
 
-      # 📊 Summary
-      - name: Build summary
-        if: success()
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install and run tests for coverage
         run: |
-          echo "## DevSecOps Pipeline Summary 🚀" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Lint & Tests passed" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Docker image built successfully" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Trivy scan passed (no HIGH/CRITICAL vulnerabilities)" >> $GITHUB_STEP_SUMMARY
-          echo "✅ SBOM generated" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Image pushed to Docker Hub" >> $GITHUB_STEP_SUMMARY
+          npm ci
+          npm run test -- --coverage --passWithNoTests
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NODE_ENV: test
+          PORT: 3001
 
-      # ❌ Failure message
-      - name: Failure notification
-        if: failure()
-        run: |
-          echo "::error::Pipeline failed - check logs above"
-          echo "::notice::Fix vulnerabilities or failing steps before re-running"
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  docker-push:
+    # Push image ONLY if scan passed
+    - name: Push Docker image
+      needs: sonarqube
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+
+    # 📊 Summary
+    - name: Build summary
+      if: success()
+      run: |
+        echo "## DevSecOps Pipeline Summary 🚀" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Lint & Tests passed" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Docker image built successfully" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Trivy scan passed (no HIGH/CRITICAL vulnerabilities)" >> $GITHUB_STEP_SUMMARY
+        echo "✅ SBOM generated" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Image pushed to Docker Hub" >> $GITHUB_STEP_SUMMARY
+
+    # ❌ Failure message
+    - name: Failure notification
+      if: failure()
+      run: |
+        echo "::error::Pipeline failed - check logs above"
+        echo "::notice::Fix vulnerabilities or failing steps before re-running"
