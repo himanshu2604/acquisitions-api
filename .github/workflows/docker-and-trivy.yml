@@ -133,32 +133,32 @@ jobs:
     needs: docker-push
 
     steps:
-    - name: Checkout GitOps repo
-      uses: actions/checkout@v4
-      with:
-        repository: himanshu2604/acquisitions-gitops
-        token: ${{ secrets.GITOPS_PAT }}
-        path: gitops
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: himanshu2604/acquisitions-gitops
+          token: ${{ secrets.GITOPS_PAT }}
+          path: gitops
 
-    - name: Update image tag in deployment.yaml
-      run: |
-        cd gitops
-        sed -i \
-          "s|image: .*/acquisitions-api:.*|image: ${{ env.IMAGE_NAME }}:${{ github.sha }}|g" \
-          app/deployment.yaml
-        git config user.email "ci-bot@github.com"
-        git config user.name "GitHub Actions Bot"
-        git add app/deployment.yaml
-        git diff --staged --quiet || \
-          git commit -m "ci: bump image to ${{ github.sha }}"
-        git push
+      - name: Update image tag in deployment.yaml
+        run: |
+          cd gitops
+          sed -i \
+            "s|image: .*/acquisitions-api:.*|image: ${{ env.IMAGE_NAME }}:${{ github.sha }}|g" \
+            app/deployment.yaml
+          git config user.email "ci-bot@github.com"
+          git config user.name "GitHub Actions Bot"
+          git add app/deployment.yaml
+          git diff --staged --quiet || \
+            git commit -m "ci: bump image to ${{ github.sha }}"
+          git push
 
-    - name: Summary
-      if: success()
-      run: |
-        echo "## DevSecOps Pipeline 🚀" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Build" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Trivy (CRITICAL=0)" >> $GITHUB_STEP_SUMMARY
-        echo "✅ SonarQube" >> $GITHUB_STEP_SUMMARY
-        echo "✅ SBOM" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Push successful" >> $GITHUB_STEP_SUMMARY
+      - name: Summary
+        if: success()
+        run: |
+          echo "## DevSecOps Pipeline 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Build" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Trivy (CRITICAL=0)" >> $GITHUB_STEP_SUMMARY
+          echo "✅ SonarQube" >> $GITHUB_STEP_SUMMARY
+          echo "✅ SBOM" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Push successful" >> $GITHUB_STEP_SUMMARY
