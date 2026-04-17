@@ -22,8 +22,6 @@ app.use(
   })
 );
 
-app.use(securityMiddleware);
-
 app.get('/', (req, res) => {
   logger.info('Hello from Acquisitions!');
 
@@ -37,6 +35,8 @@ app.get('/health', (req, res) => {
     uptime: process.uptime(),
   });
 });
+
+app.use(securityMiddleware);
 
 app.get('/api', (req, res) => {
   res.status(200).json({ message: 'Acquisitions API is running!' });
