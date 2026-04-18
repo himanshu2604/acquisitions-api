@@ -533,3 +533,5 @@
 {"level":"info","message":"Hello from Acquisitions!","service":"acquisitions-api"}
 {"level":"info","message":"127.0.0.1 - - [18/Apr/2026:15:45:35 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","service":"acquisitions-api"}
 {"level":"info","message":"127.0.0.1 - - [18/Apr/2026:15:45:42 +0000] \"GET /metrics HTTP/1.1\" 200 11617 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from Acquisitions!","service":"acquisitions-api"}
+{"level":"info","message":"127.0.0.1 - - [18/Apr/2026:15:53:46 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","service":"acquisitions-api"}
