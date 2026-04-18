@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import authRoutes from '#routes/auth.routes.js';
 import securityMiddleware from '#middleware/security.middleware.js';
 import usersRoutes from '#routes/users.routes.js';
+import { register } from './utils/metrics.js';
+import { metricsMiddleware } from './middleware/metricsMiddleware.js';
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use(
   })
 );
 
+app.use(metricsMiddleware);
+
 app.get('/', (req, res) => {
   logger.info('Hello from Acquisitions!');
 
@@ -34,6 +38,11 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });
+});
+
+app.get('/metrics', async (_req, res) => {
+  res.setHeader('Content-Type', register.contentType);
+  res.send(await register.metrics());
 });
 
 app.use(securityMiddleware);
