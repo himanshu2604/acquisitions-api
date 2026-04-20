@@ -2,7 +2,12 @@
 
 # 🏢 Acquisitions API
 
+<<<<<<< HEAD
 ### Production-grade REST API for buying and selling SaaS businesses  
+=======
+### Production-grade REST API for buying and selling SaaS businesses
+
+>>>>>>> 944f5d0 (Add screenshots and video)
 Built with a full **DevSecOps CI/CD pipeline**, **GitOps deployment**, and **real-time observability**
 
 <br/>
@@ -81,6 +86,7 @@ The answer involves five layers working together:
 
 ## 🛠️ Tech Stack
 
+<<<<<<< HEAD
 | Category | Tool | Purpose |
 |---|---|---|
 | **Runtime** | Node.js 20 + Express | Backend API framework |
@@ -101,6 +107,28 @@ The answer involves five layers working together:
 | **Alerting** | Alertmanager | Slack notifications on alert rules |
 | **Testing** | Jest + Supertest | Unit and integration tests |
 | **Code Quality** | ESLint + Prettier | Linting and formatting |
+=======
+| Category           | Tool                          | Purpose                                    |
+| ------------------ | ----------------------------- | ------------------------------------------ |
+| **Runtime**        | Node.js 20 + Express          | Backend API framework                      |
+| **Language**       | TypeScript                    | Type safety across the codebase            |
+| **Database**       | Neon DB (Serverless Postgres) | Cloud-hosted PostgreSQL                    |
+| **ORM**            | Drizzle ORM                   | Type-safe queries and migrations           |
+| **Auth**           | JWT + bcrypt                  | Token-based auth and password hashing      |
+| **Validation**     | Zod                           | Request schema validation                  |
+| **Logging**        | Winston + Morgan              | Structured app logs + HTTP request logs    |
+| **Security**       | Helmet + CORS + Arcjet        | HTTP headers, cross-origin, bot protection |
+| **Metrics**        | prom-client                   | Exposes `/metrics` for Prometheus          |
+| **CI/CD**          | GitHub Actions                | Automated pipeline (lint → scan → deploy)  |
+| **Security Gates** | Trivy + SonarCloud            | CVE scanning + SAST code analysis          |
+| **Containers**     | Docker (multi-stage)          | Optimised production images                |
+| **Orchestration**  | Kubernetes                    | Scaling, rolling updates, self-healing     |
+| **GitOps**         | ArgoCD                        | Declarative CD with drift detection        |
+| **Monitoring**     | Prometheus + Grafana          | Metrics collection and dashboards          |
+| **Alerting**       | Alertmanager                  | Slack notifications on alert rules         |
+| **Testing**        | Jest + Supertest              | Unit and integration tests                 |
+| **Code Quality**   | ESLint + Prettier             | Linting and formatting                     |
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 ---
 
@@ -113,8 +141,13 @@ The pipeline has **4 sequential stages**. Each stage must pass before the next o
 
 **Why two security gates?**
 
+<<<<<<< HEAD
 - **Trivy** catches vulnerabilities in the OS packages and npm dependencies of your *built image* — things you didn't write but ship with your app
 - **SonarCloud** catches security issues in *your own code* — hardcoded secrets, SQL injection risks, insecure patterns
+=======
+- **Trivy** catches vulnerabilities in the OS packages and npm dependencies of your _built image_ — things you didn't write but ship with your app
+- **SonarCloud** catches security issues in _your own code_ — hardcoded secrets, SQL injection risks, insecure patterns
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 Neither can catch what the other catches. You need both.
 
@@ -124,16 +157,27 @@ Neither can catch what the other catches. You need both.
 
 This project uses a **two-repo GitOps pattern**:
 
+<<<<<<< HEAD
 | Repo | Contains | Who writes to it |
 |---|---|---|
 | `acquisitions-api` (this repo) | Application code + Dockerfile + CI pipeline | Developers |
 | `acquisitions-gitops` | Kubernetes YAML manifests only | CI bot (automated) |
+=======
+| Repo                           | Contains                                    | Who writes to it   |
+| ------------------------------ | ------------------------------------------- | ------------------ |
+| `acquisitions-api` (this repo) | Application code + Dockerfile + CI pipeline | Developers         |
+| `acquisitions-gitops`          | Kubernetes YAML manifests only              | CI bot (automated) |
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 **Why separate repos?**
 
 When the CI pipeline passes all gates, it commits the new Docker image tag to `acquisitions-gitops`. ArgoCD watches that repo and deploys the change automatically.
 
 This means:
+<<<<<<< HEAD
+=======
+
+>>>>>>> 944f5d0 (Add screenshots and video)
 - **Git is always the source of truth** — not the CI runner, not someone's terminal
 - **Drift detection** — if anyone manually changes the cluster (e.g. scales down replicas), ArgoCD detects the divergence and automatically restores it within minutes
 - **Full audit trail** — every deployment is a Git commit with a message and author
@@ -151,6 +195,7 @@ The API exposes a `/metrics` endpoint via `prom-client`. Prometheus scrapes it e
 
 ### Custom metrics exposed
 
+<<<<<<< HEAD
 | Metric | Type | Description |
 |---|---|---|
 | `http_requests_total` | Counter | Every request labelled by method, route, status |
@@ -174,6 +219,31 @@ The API exposes a `/metrics` endpoint via `prom-client`. Prometheus scrapes it e
 | `AcquisitionsPodCrashLooping` | Pod restarts > 3 in 2 min | Critical |
 | `AcquisitionsHighCPU` | CPU > 80% for 5 min | Warning |
 | `AcquisitionsHighErrorRate` | 5xx rate > 5% for 2 min | Critical |
+=======
+| Metric                          | Type      | Description                                     |
+| ------------------------------- | --------- | ----------------------------------------------- |
+| `http_requests_total`           | Counter   | Every request labelled by method, route, status |
+| `http_request_duration_seconds` | Histogram | Request duration with percentile buckets        |
+| `process_heap_bytes`            | Gauge     | Node.js heap usage (auto-collected)             |
+| `nodejs_eventloop_lag_seconds`  | Gauge     | Event loop lag (auto-collected)                 |
+
+### Grafana dashboards
+
+| Dashboard                | ID      | Shows                            |
+| ------------------------ | ------- | -------------------------------- |
+| Kubernetes Cluster       | `315`   | Node CPU/memory, pod counts      |
+| ArgoCD Status            | `14584` | Sync health, deployment history  |
+| Node.js API              | `11159` | Request rate, heap, event loop   |
+| **Custom API dashboard** | —       | Req/s, P95 latency, error rate % |
+
+### Alert rules
+
+| Alert                         | Trigger                   | Severity |
+| ----------------------------- | ------------------------- | -------- |
+| `AcquisitionsPodCrashLooping` | Pod restarts > 3 in 2 min | Critical |
+| `AcquisitionsHighCPU`         | CPU > 80% for 5 min       | Warning  |
+| `AcquisitionsHighErrorRate`   | 5xx rate > 5% for 2 min   | Critical |
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 Alerts fire to **Slack** via Alertmanager.
 
@@ -183,6 +253,7 @@ Alerts fire to **Slack** via Alertmanager.
 
 ### Auth
 
+<<<<<<< HEAD
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
 | `POST` | `/api/auth/signup` | Register a new user | Public |
@@ -214,6 +285,39 @@ Alerts fire to **Slack** via Alertmanager.
 |---|---|---|
 | `GET` | `/health` | Health check — returns status + timestamp |
 | `GET` | `/metrics` | Prometheus metrics endpoint |
+=======
+| Method | Endpoint            | Description                  | Auth     |
+| ------ | ------------------- | ---------------------------- | -------- |
+| `POST` | `/api/auth/signup`  | Register a new user          | Public   |
+| `POST` | `/api/auth/signin`  | Login and receive JWT cookie | Public   |
+| `POST` | `/api/auth/signout` | Logout and clear session     | Required |
+
+### Users
+
+| Method   | Endpoint         | Description         | Auth           |
+| -------- | ---------------- | ------------------- | -------------- |
+| `GET`    | `/api/users`     | Get all users       | Admin only     |
+| `GET`    | `/api/users/:id` | Get user by ID      | Required       |
+| `PUT`    | `/api/users/:id` | Update user profile | Owner or Admin |
+| `DELETE` | `/api/users/:id` | Delete user         | Admin only     |
+
+### Business Listings [Working on this feature !!!]
+
+| Method   | Endpoint            | Description             | Auth           |
+| -------- | ------------------- | ----------------------- | -------------- |
+| `GET`    | `/api/listings`     | Get all active listings | Public         |
+| `GET`    | `/api/listings/:id` | Get listing by ID       | Public         |
+| `POST`   | `/api/listings`     | Create new listing      | Required       |
+| `PUT`    | `/api/listings/:id` | Update listing          | Owner or Admin |
+| `DELETE` | `/api/listings/:id` | Delete listing          | Owner or Admin |
+
+### System
+
+| Method | Endpoint   | Description                               |
+| ------ | ---------- | ----------------------------------------- |
+| `GET`  | `/health`  | Health check — returns status + timestamp |
+| `GET`  | `/metrics` | Prometheus metrics endpoint               |
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 ---
 
@@ -302,6 +406,7 @@ acquisitions-api/
 
 ## 🔒 Security
 
+<<<<<<< HEAD
 | Layer | Tool | Protection |
 |---|---|---|
 | HTTP Headers | Helmet | XSS, clickjacking, MIME sniffing |
@@ -313,6 +418,19 @@ acquisitions-api/
 | CVE Scanning | Trivy (CI gate) | Container vulnerabilities blocked before deploy |
 | Code Analysis | SonarCloud (CI gate) | Security hotspots in source code |
 | Container | Non-root USER | App runs as unprivileged user in Docker |
+=======
+| Layer            | Tool                 | Protection                                      |
+| ---------------- | -------------------- | ----------------------------------------------- |
+| HTTP Headers     | Helmet               | XSS, clickjacking, MIME sniffing                |
+| Cross-Origin     | CORS                 | Controlled cross-origin access                  |
+| Bot Protection   | Arcjet               | Real-time bot detection and blocking            |
+| Rate Limiting    | Arcjet               | Per-route request throttling                    |
+| Authentication   | JWT + bcrypt         | Secure sessions, hashed passwords               |
+| Input Validation | Zod                  | All request bodies validated                    |
+| CVE Scanning     | Trivy (CI gate)      | Container vulnerabilities blocked before deploy |
+| Code Analysis    | SonarCloud (CI gate) | Security hotspots in source code                |
+| Container        | Non-root USER        | App runs as unprivileged user in Docker         |
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 ---
 
@@ -330,6 +448,10 @@ npm run test -- --watch
 ```
 
 Tests cover:
+<<<<<<< HEAD
+=======
+
+>>>>>>> 944f5d0 (Add screenshots and video)
 - ✅ Auth flows — signup, signin, signout, invalid credentials
 - ✅ Protected route enforcement
 - ✅ Input validation error responses
@@ -367,6 +489,10 @@ This project is for educational and portfolio purposes.
 
 **🔗 Related repo:** [acquisitions-gitops](https://github.com/himanshu2604/acquisitions-gitops) — K8s manifests and Helm values
 
+<<<<<<< HEAD
 *Built by Himanshu as a DevOps portfolio project*
+=======
+_Built by Himanshu as a DevOps portfolio project_
+>>>>>>> 944f5d0 (Add screenshots and video)
 
 </div>
