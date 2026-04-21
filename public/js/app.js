@@ -29,7 +29,10 @@ async function checkApiStatus() {
       uptimeValue.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
       latencyValue.textContent = `${latency} ms`;
-      latencyValue.className = latency < 200 ? 'font-mono text-emerald-400' : 'font-mono text-amber-400';
+      latencyValue.className =
+        latency < 200
+          ? 'font-mono text-emerald-400'
+          : 'font-mono text-amber-400';
 
       logMessage.textContent = `[${new Date().toLocaleTimeString()}] Health check passed. System status: ${data.status}`;
     } else {
