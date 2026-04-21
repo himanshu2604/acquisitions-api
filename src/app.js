@@ -12,7 +12,19 @@ import { metricsMiddleware } from './middleware/metricsMiddleware.js';
 
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'script-src': ["'self'", 'cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com'],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdnjs.cloudflare.com'],
+        'font-src': ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com'],
+        'img-src': ["'self'", 'data:', 'https://img.shields.io'],
+      },
+    },
+  })
+);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,12 +37,7 @@ app.use(
 );
 
 app.use(metricsMiddleware);
-
-app.get('/', (req, res) => {
-  logger.info('Hello from Acquisitions!');
-
-  res.status(200).send('Hello from Acquisitions!');
-});
+app.use(express.static('public'));
 
 app.get('/health', (req, res) => {
   res.status(200).json({
