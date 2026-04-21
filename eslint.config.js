@@ -33,6 +33,19 @@ export default [
     },
   },
   {
+    files: ['public/js/**/*.js'],
+    languageOptions: {
+      globals: {
+        document: 'readonly',
+        window: 'readonly',
+        fetch: 'readonly',
+        performance: 'readonly',
+        setInterval: 'readonly',
+        setTimeout: 'readonly',
+      },
+    },
+  },
+  {
     files: ['tests/**/*.js'],
     languageOptions: {
       globals: {
