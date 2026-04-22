@@ -2,5 +2,7 @@ node_modules
 .env
 .env.*
 .neon_local/
+coverage/
+logs/
 public/readme/module-icon.webp
 public/readme/module-thumbnail.webp

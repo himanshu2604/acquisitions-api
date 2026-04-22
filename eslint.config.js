@@ -22,7 +22,7 @@ export default [
     rules: {
       indent: ['error', 2, { SwitchCase: 1 }],
       'linebreak-style': ['error', 'unix'],
-      quotes: ['error', 'single'],
+      quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-console': 'off',
@@ -30,6 +30,19 @@ export default [
       'no-var': 'error',
       'object-shorthand': 'error',
       'prefer-arrow-callback': 'error',
+    },
+  },
+  {
+    files: ['public/js/**/*.js'],
+    languageOptions: {
+      globals: {
+        document: 'readonly',
+        window: 'readonly',
+        fetch: 'readonly',
+        performance: 'readonly',
+        setInterval: 'readonly',
+        setTimeout: 'readonly',
+      },
     },
   },
   {
