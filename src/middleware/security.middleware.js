@@ -65,16 +65,21 @@ const securityMiddleware = async (req, res, next) => {
         path: req.path,
       });
 
-      return res
-        .status(403)
-        .json({ error: 'Forbidden', message: 'Too many requests' });
+      if (decision.reason.reset) {
+        res.setHeader('Retry-After', decision.reason.reset.toString());
+      }
+
+      return res.status(429).json({
+        error: 'Too Many Requests',
+        message: 'Rate limit exceeded. Please try again later.',
+      });
     }
 
     next();
   } catch (e) {
     console.error('Arcjet middleware error:', e);
     res.status(500).json({
-      errro: 'Internal server error',
+      error: 'Internal server error',
       message: 'Something went wrong with security middleware',
     });
   }
