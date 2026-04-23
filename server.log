@@ -1,0 +1,10 @@
+
+> acquisitions@1.0.0 start /app
+> node src/index.js
+
+Listening on http://0.0.0.0:3000
+[32minfo[39m: 127.0.0.1 - - [23/Apr/2026:02:16:34 +0000] "GET / HTTP/1.1" 200 11863 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36" {"service":"acquisitions-api"}
+[32minfo[39m: 127.0.0.1 - - [23/Apr/2026:02:16:34 +0000] "GET /js/app.js HTTP/1.1" 200 2352 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36" {"service":"acquisitions-api"}
+[32minfo[39m: 127.0.0.1 - - [23/Apr/2026:02:16:35 +0000] "GET /health HTTP/1.1" 200 75 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36" {"service":"acquisitions-api"}
+Killed
+ ELIFECYCLE  Command failed with exit code 137.
